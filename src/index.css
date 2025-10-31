@@ -43,6 +43,102 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Smooth transitions for all elements */
+* {
+  transition-property: color, background-color, border-color, transform, opacity, box-shadow;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modern loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+  background: linear-gradient(
+    to right,
+    #f0f0f0 0%,
+    #f8f8f8 50%,
+    #f0f0f0 100%
+  );
+  background-size: 1000px 100%;
+}
+
+/* Smooth card hover effects */
+.card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+}
+
+/* Modern button press effect */
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+/* Subtle glow and shine for primary CTAs */
+.btn-shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shine::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  height: 100%;
+  width: 150%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-20deg);
+}
+
+.btn-shine:hover::after {
+  animation: shine-sweep 0.8s ease;
+}
+
+@keyframes shine-sweep {
+  from { left: -150%; }
+  to { left: 150%; }
+}
+
+/* Pulse on hover for secondary actions */
+.pulse-hover:hover {
+  box-shadow: 0 0 0 0 rgba(10, 102, 194, 0.5);
+  animation: pulse 1.2s ease-out;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(10, 102, 194, 0.5); }
+  100% { box-shadow: 0 0 0 12px rgba(10, 102, 194, 0); }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
 /* Focus states for accessibility */
 .focus-visible:focus {
   outline: 2px solid #10b981;
@@ -88,7 +184,7 @@ html {
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -120,6 +216,19 @@ html {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* LinkedIn-inspired design tokens */
+  --linkedin-blue: #0a66c2;
+  --linkedin-blue-hover: #004182;
+  --linkedin-blue-light: #378fe9;
+  --linkedin-bg: #f3f2ef;
+  --linkedin-border: #e0dfdc;
+  --linkedin-text: #000000e6;
+  --linkedin-text-secondary: #00000099;
+  --shadow-sm: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 4px 8px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.15);
+  --shadow-hover: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .dark {
@@ -162,5 +271,52 @@ html {
   }
   body {
     @apply bg-background text-foreground;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Fira Sans", Ubuntu, Oxygen, "Oxygen Sans", Cantarell, "Droid Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Lucida Grande", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+}
+
+/* LinkedIn-inspired utility classes */
+.linkedin-card {
+  background: white;
+  border: 1px solid var(--linkedin-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.linkedin-card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+.linkedin-btn-primary {
+  background: var(--linkedin-blue);
+  color: white;
+  font-weight: 600;
+  border-radius: 24px;
+  padding: 10px 24px;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0 1px transparent;
+}
+
+.linkedin-btn-primary:hover {
+  background: var(--linkedin-blue-hover);
+  box-shadow: 0 0 0 1px var(--linkedin-blue-hover), 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.linkedin-btn-secondary {
+  border: 1px solid var(--linkedin-blue);
+  color: var(--linkedin-blue);
+  background: white;
+  font-weight: 600;
+  border-radius: 24px;
+  padding: 10px 24px;
+  transition: all 0.2s ease;
+}
+
+.linkedin-btn-secondary:hover {
+  background: rgba(10, 102, 194, 0.08);
+  border-color: var(--linkedin-blue-hover);
 }

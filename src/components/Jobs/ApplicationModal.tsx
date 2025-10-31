@@ -32,20 +32,30 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
 
     if (!formData.candidateName.trim()) {
       newErrors.candidateName = "Name is required";
+    } else if (formData.candidateName.trim().length < 2) {
+      newErrors.candidateName = "Name must be at least 2 characters";
     }
 
     if (!formData.candidateEmail.trim()) {
       newErrors.candidateEmail = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.candidateEmail)) {
-      newErrors.candidateEmail = "Please enter a valid email";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.candidateEmail)) {
+      newErrors.candidateEmail = "Please enter a valid email address";
     }
 
     if (!formData.candidatePhone.trim()) {
       newErrors.candidatePhone = "Phone number is required";
+    } else if (!/^\+?[\d\s\-()]+$/.test(formData.candidatePhone) || formData.candidatePhone.replace(/\D/g, '').length < 10) {
+      newErrors.candidatePhone = "Please enter a valid phone number (at least 10 digits)";
     }
 
     if (!formData.coverLetter.trim()) {
       newErrors.coverLetter = "Cover letter is required";
+    } else if (formData.coverLetter.trim().length < 50) {
+      newErrors.coverLetter = "Cover letter must be at least 50 characters";
+    }
+
+    if (!formData.experience.trim()) {
+      newErrors.experience = "Experience is required";
     }
 
     setErrors(newErrors);
@@ -76,11 +86,13 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
       };
 
       await axios.post("/applications", candidateData);
+      toast.success("Application submitted successfully!");
       onSuccess();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error submitting application:", error);
-      toast.error("Failed to submit application. Please try again.");
+      const errorMessage = error.response?.data?.message || error.message || "Failed to submit application. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -203,7 +215,7 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Professional Experience
+                Professional Experience *
               </label>
               <textarea
                 value={formData.experience}
@@ -211,9 +223,14 @@ const ApplicationModal: React.FC<ApplicationModalProps> = ({
                   setFormData({ ...formData, experience: e.target.value })
                 }
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+                  errors.experience ? "border-red-300" : "border-gray-300"
+                }`}
                 placeholder="Describe your relevant work experience..."
               />
+              {errors.experience && (
+                <p className="text-red-500 text-xs mt-1">{errors.experience}</p>
+              )}
             </div>
 
             <div>

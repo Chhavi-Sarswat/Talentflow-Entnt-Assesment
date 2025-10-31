@@ -29,10 +29,22 @@ const JobModal: React.FC<JobModalProps> = ({ job, onClose, onSave }) => {
 
     if (!formData.title.trim()) {
       newErrors.title = "Title is required";
+    } else if (formData.title.trim().length < 3) {
+      newErrors.title = "Title must be at least 3 characters";
+    }
+
+    if (!formData.location.trim()) {
+      newErrors.location = "Location is required";
     }
 
     if (!formData.description.trim()) {
       newErrors.description = "Description is required";
+    } else if (formData.description.trim().length < 20) {
+      newErrors.description = "Description must be at least 20 characters";
+    }
+
+    if (!formData.salary.trim()) {
+      newErrors.salary = "Salary range is required";
     }
 
     setErrors(newErrors);
@@ -60,11 +72,12 @@ const JobModal: React.FC<JobModalProps> = ({ job, onClose, onSave }) => {
       } else {
         await axios.post("/jobs", jobData);
       }
-      toast.success("Job saved successfully");
+      toast.success(`Job ${job ? 'updated' : 'created'} successfully`);
       onSave();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving job:", error);
-      toast.error("Error saving job");
+      const errorMessage = error.response?.data?.message || error.message || "Failed to save job. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -122,7 +135,7 @@ const JobModal: React.FC<JobModalProps> = ({ job, onClose, onSave }) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Location
+                  Location *
                 </label>
                 <input
                   type="text"
@@ -130,9 +143,14 @@ const JobModal: React.FC<JobModalProps> = ({ job, onClose, onSave }) => {
                   onChange={(e) =>
                     setFormData({ ...formData, location: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+                    errors.location ? "border-red-300" : "border-gray-300"
+                  }`}
                   placeholder="e.g., San Francisco, CA"
                 />
+                {errors.location && (
+                  <p className="text-red-500 text-xs mt-1">{errors.location}</p>
+                )}
               </div>
 
               <div>
@@ -162,7 +180,7 @@ const JobModal: React.FC<JobModalProps> = ({ job, onClose, onSave }) => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Salary Range
+                  Salary Range *
                 </label>
                 <input
                   type="text"
@@ -170,9 +188,14 @@ const JobModal: React.FC<JobModalProps> = ({ job, onClose, onSave }) => {
                   onChange={(e) =>
                     setFormData({ ...formData, salary: e.target.value })
                   }
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent ${
+                    errors.salary ? "border-red-300" : "border-gray-300"
+                  }`}
                   placeholder="e.g., $80K - $120K"
                 />
+                {errors.salary && (
+                  <p className="text-red-500 text-xs mt-1">{errors.salary}</p>
+                )}
               </div>
 
               <div>

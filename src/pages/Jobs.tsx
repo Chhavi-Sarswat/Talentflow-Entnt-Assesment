@@ -45,8 +45,9 @@ const Jobs: React.FC = () => {
       // Show all jobs (no company filtering)
       setJobs(response.data.data);
       setTotalJobs(response.data.total);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching jobs:", error);
+      toast.error(error.response?.data?.message || "Failed to load jobs");
     } finally {
       setLoading(false);
     }
@@ -80,13 +81,16 @@ const Jobs: React.FC = () => {
   };
 
   const handleArchive = async (job: Job) => {
+    const newStatus = job.status === "active" ? "archived" : "active";
     try {
       await axios.patch(`/jobs/${job.id}`, {
-        status: job.status === "active" ? "archived" : "active",
+        status: newStatus,
       });
+      toast.success(`Job ${newStatus === "archived" ? "archived" : "unarchived"} successfully`);
       fetchJobs();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error updating job status:", error);
+      toast.error(error.response?.data?.message || "Failed to update job status");
     }
   };
 
@@ -114,6 +118,7 @@ const Jobs: React.FC = () => {
     newJobs.splice(toIndex, 0, movedJob);
 
     // Optimistic update
+    const previousJobs = [...jobs];
     setJobs(newJobs);
 
     try {
@@ -121,10 +126,12 @@ const Jobs: React.FC = () => {
         fromOrder: fromIndex,
         toOrder: toIndex,
       });
-    } catch (error) {
+      toast.success("Job order updated successfully");
+    } catch (error: any) {
       console.error("Error reordering jobs:", error);
+      toast.error(error.response?.data?.message || "Failed to reorder job. Changes reverted.");
       // Rollback on failure
-      fetchJobs();
+      setJobs(previousJobs);
     }
   };
 
@@ -288,8 +295,10 @@ const Jobs: React.FC = () => {
                   onDragStart={(e) => handleDragStart(e, job)}
                   onDragOver={handleDragOver}
                   onDrop={(e) => handleDrop(e, index)}
-                  className={`p-6 hover:bg-gray-50 transition-colors duration-200 cursor-move ${
-                    draggedJob?.id === job.id ? "opacity-50" : ""
+                  className={`p-6 hover:bg-gray-50 transition-all duration-200 cursor-move border-l-4 ${
+                    draggedJob?.id === job.id 
+                      ? "opacity-50 border-l-emerald-500 bg-emerald-50" 
+                      : "border-l-transparent"
                   }`}
                 >
                   <div className="flex items-center justify-between">

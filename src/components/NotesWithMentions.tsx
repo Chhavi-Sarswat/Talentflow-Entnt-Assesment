@@ -30,11 +30,11 @@ const NotesWithMentions: React.FC<NotesWithMentionsProps> = ({
 
   // Mock users for mentions - in a real app, this would come from props or API
   const mentionUsers: MentionUser[] = [
-    { id: "1", name: "John Smith", email: "john@company.com" },
-    { id: "2", name: "Sarah Johnson", email: "sarah@company.com" },
-    { id: "3", name: "Mike Wilson", email: "mike@company.com" },
-    { id: "4", name: "Emily Davis", email: "emily@company.com" },
-    { id: "5", name: "David Brown", email: "david@company.com" },
+    { id: "1", name: "Rahul Sharma", email: "rahul.sharma@company.com" },
+    { id: "2", name: "Priya Patel", email: "priya.patel@company.com" },
+    { id: "3", name: "Arjun Verma", email: "arjun.verma@company.com" },
+    { id: "4", name: "Ananya Gupta", email: "ananya.gupta@company.com" },
+    { id: "5", name: "Vikram Singh", email: "vikram.singh@company.com" },
   ];
 
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

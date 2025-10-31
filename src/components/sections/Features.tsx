@@ -77,7 +77,7 @@ const Features: React.FC = () => {
   return (
     <section
       id="features"
-      className="flex flex-col gap-10 items-center py-16 lg:py-24 bg-gray-50"
+      className="flex flex-col gap-10 items-center py-16 lg:py-24 bg-[var(--linkedin-bg)]"
     >
       <div className="flex items-center gap-5">
         <span className="md:w-40 sm:w-25 w-12 h-[2px] bg-gradient-to-r from-white to-emerald-600/70 rounded-full"></span>
@@ -97,21 +97,21 @@ const Features: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((feature, index) => (
-            <Card
+            <div
               key={feature.id}
-              className="text-center hover:shadow-lg transition-shadow duration-300"
+              className="linkedin-card text-center p-8 group hover:scale-[1.02] transition-all duration-300"
             >
-              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 bg-emerald-600 text-white">
+              <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 bg-gradient-to-br from-[var(--linkedin-blue)] to-indigo-600 text-white shadow-md group-hover:shadow-lg transition-shadow">
                 {getFeatureIcon(feature.icon)}
               </div>
 
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
+              <h3 className="text-xl font-bold text-gray-900 mb-4 group-hover:text-[var(--linkedin-blue)] transition-colors">
                 {feature.title}
               </h3>
 
-              <p className="text-gray-600 leading-relaxed">
+              <p className="text-gray-600 leading-relaxed text-sm">
                 {feature.description}
               </p>
 
@@ -148,11 +148,11 @@ const Features: React.FC = () => {
                   <div className="space-y-3">
                     <div className="flex items-center space-x-2">
                       <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                        <span className="text-xs font-semibold">MA</span>
+                        <span className="text-xs font-semibold">PS</span>
                       </div>
                       <div className="flex-1 text-left">
                         <p className="md:text-sm text-xs font-medium text-gray-900">
-                          Maria Angelica M
+                          Priya Sharma
                         </p>
                         <p className="text-xs text-gray-600">
                           Product Designer
@@ -211,7 +211,7 @@ const Features: React.FC = () => {
                   </div>
                 </div>
               )}
-            </Card>
+            </div>
           ))}
         </div>
       </div>

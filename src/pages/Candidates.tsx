@@ -24,6 +24,9 @@ const Candidates: React.FC = () => {
     null
   );
   const [quickNote, setQuickNote] = useState("");
+  const [visibleCandidatesPerStage, setVisibleCandidatesPerStage] = useState<Record<string, number>>({});
+  const INITIAL_LOAD = 20; // Show initial 20 candidates per stage
+  const LOAD_MORE = 20; // Load 20 more at a time
 
   const stages = [
     { id: "applied", name: "Applied", color: "bg-blue-100 text-blue-800" },
@@ -71,8 +74,9 @@ const Candidates: React.FC = () => {
       let filteredCandidates = response.data.data;
 
       setCandidates(filteredCandidates);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching candidates:", error);
+      toast.error(error.response?.data?.message || "Failed to load candidates");
     } finally {
       setLoading(false);
     }
@@ -96,6 +100,22 @@ const Candidates: React.FC = () => {
       fetchCandidates();
     }
   }, [jobFilter, jobs, search, stageFilter]);
+
+  // Initialize visible candidates count for each stage
+  useEffect(() => {
+    const initialCounts: Record<string, number> = {};
+    stages.forEach(stage => {
+      initialCounts[stage.id] = INITIAL_LOAD;
+    });
+    setVisibleCandidatesPerStage(initialCounts);
+  }, []);
+
+  const loadMoreCandidates = (stageId: string) => {
+    setVisibleCandidatesPerStage(prev => ({
+      ...prev,
+      [stageId]: (prev[stageId] || INITIAL_LOAD) + LOAD_MORE
+    }));
+  };
 
   const getCandidatesByStage = (stageId: string) => {
     return candidates.filter((candidate) => candidate.stage === stageId);
@@ -130,24 +150,30 @@ const Candidates: React.FC = () => {
     e.preventDefault();
 
     if (!draggedCandidate || draggedCandidate.stage === targetStage) {
+      setDraggedCandidate(null);
       return;
     }
+
+    // Optimistic update
+    const previousCandidates = [...candidates];
+    setCandidates((prev) =>
+      prev.map((candidate) =>
+        candidate.id === draggedCandidate.id
+          ? { ...candidate, stage: targetStage as Candidate["stage"] }
+          : candidate
+      )
+    );
 
     try {
       await axios.patch(`/applications/${draggedCandidate.id}/status`, {
         status: targetStage,
       });
-
-      // Update local state
-      setCandidates((prev) =>
-        prev.map((candidate) =>
-          candidate.id === draggedCandidate.id
-            ? { ...candidate, stage: targetStage as Candidate["stage"] }
-            : candidate
-        )
-      );
-    } catch (error) {
+      toast.success(`Candidate moved to ${targetStage}`);
+    } catch (error: any) {
       console.error("Error updating candidate status:", error);
+      toast.error(error.response?.data?.message || "Failed to update candidate status");
+      // Rollback on failure
+      setCandidates(previousCandidates);
     }
 
     setDraggedCandidate(null);
@@ -291,7 +317,11 @@ const Candidates: React.FC = () => {
           return (
             <div
               key={stage.id}
-              className="bg-gray-50 border border-emerald-400 rounded-lg p-3 min-h-[600px] flex flex-col"
+              className={`bg-gray-50 border rounded-lg p-3 min-h-[600px] flex flex-col transition-colors ${
+                draggedCandidate && draggedCandidate.stage !== stage.id
+                  ? "border-emerald-500 border-2 bg-emerald-50"
+                  : "border-gray-300"
+              }`}
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, stage.id)}
             >
@@ -307,12 +337,16 @@ const Candidates: React.FC = () => {
               </div>
 
               <div className="flex-1 overflow-y-auto space-y-2">
-                {stageCandidates.map((candidate) => (
+                {stageCandidates
+                  .slice(0, visibleCandidatesPerStage[stage.id] || INITIAL_LOAD)
+                  .map((candidate) => (
                   <div
                     key={candidate.id}
                     draggable
                     onDragStart={(e) => handleDragStart(e, candidate)}
-                    className="flex flex-col justify-between gap-1 bg-white rounded-lg p-3 shadow-sm border border-gray-200 hover:shadow-md transition-shadow cursor-move mb-3"
+                    className={`flex flex-col justify-between gap-1 bg-white rounded-lg p-3 shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 cursor-move mb-3 ${
+                      draggedCandidate?.id === candidate.id ? "opacity-50 scale-95" : ""
+                    }`}
                   >
                     {/* Name and Email */}
                     <div className="mb-2">
@@ -433,6 +467,16 @@ const Candidates: React.FC = () => {
                   <div className="text-center py-6 text-gray-500 text-xs">
                     No candidates
                   </div>
+                )}
+
+                {/* Load More Button */}
+                {stageCandidates.length > (visibleCandidatesPerStage[stage.id] || INITIAL_LOAD) && (
+                  <button
+                    onClick={() => loadMoreCandidates(stage.id)}
+                    className="w-full py-2 text-xs text-emerald-600 hover:text-emerald-700 font-medium border border-emerald-300 rounded-lg hover:bg-emerald-50 transition-colors"
+                  >
+                    Load More ({stageCandidates.length - (visibleCandidatesPerStage[stage.id] || INITIAL_LOAD)} remaining)
+                  </button>
                 )}
               </div>
             </div>

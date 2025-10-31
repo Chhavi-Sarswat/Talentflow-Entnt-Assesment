@@ -1,6 +1,6 @@
 import { http, HttpResponse } from 'msw';
 import { getAllJobs, createJob, updateJob, reorderJob, deleteJob, jobsDb } from '../db/jobsDb';
-import { delay } from '../../utils/latency';
+import { delay, maybeFail } from '../../utils/latency';
 
 export const jobsHandlers = [
   http.get('/jobs', async ({ request }) => {
@@ -25,6 +25,7 @@ export const jobsHandlers = [
 
   http.post('/jobs', async ({ request }) => {
     await delay();
+    maybeFail(); // 5-10% error rate on write
     
     const jobData = await request.json() as any;
     const newJob = await createJob(jobData);
@@ -33,6 +34,7 @@ export const jobsHandlers = [
 
   http.patch('/jobs/:id', async ({ params, request }) => {
     await delay();
+    maybeFail(); // 5-10% error rate on write
     
     const updates = await request.json() as any;
     const updatedJob = await updateJob(params.id as string, updates);
@@ -41,6 +43,13 @@ export const jobsHandlers = [
 
   http.patch('/jobs/:id/reorder', async ({ params, request }) => {
     await delay();
+    // Note: Reorder has optimistic updates, occasional failures are expected
+    if (Math.random() < 0.05) { // 5% failure rate for testing rollback
+      return new HttpResponse(JSON.stringify({ error: 'Failed to reorder' }), { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
     
     const reorderData = await request.json() as any;
     const updatedJob = await reorderJob(params.id as string, reorderData);

@@ -183,8 +183,10 @@ const AssessmentBuilder: React.FC<AssessmentBuilderProps> = () => {
       await axios.post("/assessments", assessment);
       toast.success("Assessment saved successfully");
       navigate("/dashboard/assessments");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error saving assessment:", error);
+      const errorMessage = error.response?.data?.message || error.message || "Failed to save assessment. Please try again.";
+      toast.error(errorMessage);
     }
   };
 

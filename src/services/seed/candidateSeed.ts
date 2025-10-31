@@ -22,9 +22,18 @@ export interface Candidate {
 
 const stages: Candidate['stage'][] = ['applied', 'screening', 'interview', 'offer', 'hired', 'rejected'];
 
+// Indian names pool
+const indianFirstNames = {
+  male: ['Aarav', 'Arjun', 'Aditya', 'Rahul', 'Rohan', 'Karan', 'Aryan', 'Vikram', 'Amit', 'Raj', 'Sanjay', 'Prateek', 'Varun', 'Nikhil', 'Vishal', 'Aakash', 'Dev', 'Krishna', 'Ravi', 'Kunal', 'Ajay', 'Manish', 'Rohit', 'Akash', 'Siddharth'],
+  female: ['Priya', 'Ananya', 'Isha', 'Kavya', 'Riya', 'Sneha', 'Pooja', 'Neha', 'Divya', 'Anjali', 'Shruti', 'Diya', 'Aisha', 'Meera', 'Sanya', 'Tanvi', 'Ishita', 'Simran', 'Kiara', 'Nisha', 'Preeti', 'Sakshi', 'Swati', 'Ayesha', 'Aditi']
+};
+
+const indianLastNames = ['Sharma', 'Verma', 'Patel', 'Kumar', 'Singh', 'Gupta', 'Reddy', 'Rao', 'Mehta', 'Joshi', 'Desai', 'Agarwal', 'Kapoor', 'Malhotra', 'Khanna', 'Chopra', 'Nair', 'Iyer', 'Menon', 'Banerjee', 'Chakraborty', 'Das', 'Sinha', 'Pandey', 'Mishra'];
+
 function generateCandidate(index: number, jobIds: string[]): Candidate {
-  const firstName = faker.person.firstName();
-  const lastName = faker.person.lastName();
+  const gender = index % 2 === 0 ? 'male' : 'female';
+  const firstName = faker.helpers.arrayElement(indianFirstNames[gender]);
+  const lastName = faker.helpers.arrayElement(indianLastNames);
   
   // Generate additional application-specific fields
   const techSkills = [
@@ -55,7 +64,7 @@ ${firstName} ${lastName}`;
     email: faker.internet.email({ firstName, lastName }),
     stage: faker.helpers.arrayElement(stages),
     jobId: faker.helpers.arrayElement(jobIds),
-    phone: faker.phone.number(),
+    phone: `+91 ${faker.string.numeric(5)} ${faker.string.numeric(5)}`,
     resume: faker.internet.url(),
     notes: Array.from({ length: faker.number.int({ min: 0, max: 3 }) }, 
       () => faker.lorem.sentence()
@@ -67,14 +76,16 @@ ${firstName} ${lastName}`;
     experience,
     skills,
     education: faker.helpers.arrayElement([
-      'Bachelor\'s in Computer Science',
-      'Master\'s in Software Engineering', 
-      'Bachelor\'s in Information Technology',
-      'Associate\'s in Computer Programming',
-      'Bachelor\'s in Engineering',
-      'Master\'s in Computer Science',
-      'Bachelor\'s in Mathematics',
-      'PhD in Computer Science'
+      'B.Tech in Computer Science - IIT Delhi',
+      'M.Tech in Software Engineering - IIT Bombay',
+      'B.E. in Information Technology - NIT Trichy',
+      'MCA - BITS Pilani',
+      'B.Tech in Electronics - VIT Vellore',
+      'M.S. in Computer Science - IIIT Hyderabad',
+      'B.Sc. in Mathematics - Delhi University',
+      'MBA - IIM Bangalore',
+      'B.Tech - Anna University',
+      'M.Tech - IIT Madras'
     ])
   };
 }

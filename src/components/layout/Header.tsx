@@ -13,19 +13,19 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white shadow-sm border-b border-[var(--linkedin-border)] sticky top-0 z-50 backdrop-blur-lg bg-white/95">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Logo />
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          <nav className="hidden md:flex items-center space-x-1">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="text-gray-700 hover:underline hover:underline-offset-6 hover:text-emerald-600 font-medium transition-colors duration-200"
+                className="text-gray-700 hover:text-[var(--linkedin-text)] font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition-all duration-200"
               >
                 {link.label}
               </a>
@@ -34,14 +34,12 @@ const Header: React.FC = () => {
 
           {/* HR Login Button */}
           <div className="hidden md:block">
-            <Button
-              variant="default"
-              size="lg"
-              className="text-white bg-emerald-600 hover:bg-emerald-700"
+            <button
               onClick={() => navigate("/hr-login")}
+              className="linkedin-btn-primary px-6 py-2.5 text-sm"
             >
-              Login
-            </Button>
+              Sign in
+            </button>
           </div>
 
           {/* Mobile menu button */}

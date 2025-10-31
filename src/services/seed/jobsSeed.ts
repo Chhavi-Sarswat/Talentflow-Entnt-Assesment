@@ -35,6 +35,25 @@ const jobTypes: Job['jobType'][] = ['Full-time', 'Remote', 'Part-time', 'Contrac
 
 // Popular tech companies for more realistic data
 
+// Indian cities
+const indianCities = [
+  'Bangalore, Karnataka',
+  'Mumbai, Maharashtra',
+  'Delhi, NCR',
+  'Hyderabad, Telangana',
+  'Pune, Maharashtra',
+  'Chennai, Tamil Nadu',
+  'Kolkata, West Bengal',
+  'Ahmedabad, Gujarat',
+  'Gurgaon, Haryana',
+  'Noida, Uttar Pradesh',
+  'Jaipur, Rajasthan',
+  'Kochi, Kerala',
+  'Indore, Madhya Pradesh',
+  'Chandigarh, Punjab',
+  'Mysore, Karnataka'
+];
+
 function generateJob(index: number): Job {
   const title = faker.helpers.arrayElement(jobTitles);
   const slug = title.toLowerCase().replace(/\s+/g, '-') + '-' + faker.string.alphanumeric(4);
@@ -50,8 +69,8 @@ function generateJob(index: number): Job {
     requirements: Array.from({ length: faker.number.int({ min: 3, max: 6 }) }, 
       () => faker.lorem.sentence()
     ),
-    salary: `$${faker.number.int({ min: 50, max: 200 })}K - $${faker.number.int({ min: 200, max: 300 })}K`,
-    location: faker.location.city() + ', ' + faker.location.state(),
+    salary: `₹${faker.number.int({ min: 8, max: 25 })} - ₹${faker.number.int({ min: 25, max: 50 })} LPA`,
+    location: faker.helpers.arrayElement(indianCities),
     jobType: faker.helpers.arrayElement(jobTypes),
     createdAt: faker.date.past({ years: 1 })
   };

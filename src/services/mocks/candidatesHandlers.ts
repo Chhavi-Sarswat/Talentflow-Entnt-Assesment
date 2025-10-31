@@ -9,7 +9,7 @@ import {
   getApplicationStatistics,
   candidatesDb 
 } from '../db/candidatesDb';
-import { delay } from '../../utils/latency';
+import { delay, maybeFail } from '../../utils/latency';
 
 export const candidatesHandlers = [
   // Existing candidate endpoints
@@ -60,6 +60,7 @@ export const candidatesHandlers = [
 
   http.patch('/candidates/:id', async ({ params, request }) => {
     await delay();
+    maybeFail(); // 5-10% error rate on write
     
     const updates = await request.json() as any;
     const updatedCandidate = await updateCandidate(params.id as string, updates);
@@ -68,6 +69,7 @@ export const candidatesHandlers = [
 
   http.post('/candidates', async ({ request }) => {
     await delay();
+    maybeFail(); // 5-10% error rate on write
     
     const candidateData = await request.json() as any;
     const newCandidate = await candidatesDb.candidates.add({
@@ -99,6 +101,7 @@ export const candidatesHandlers = [
 
   http.post('/applications', async ({ request }) => {
     await delay();
+    maybeFail(); // 5-10% error rate on write
     
     const applicationData = await request.json() as any;
     const newCandidate = await createCandidateApplication(applicationData);
@@ -107,6 +110,7 @@ export const candidatesHandlers = [
 
   http.patch('/applications/:id/status', async ({ params, request }) => {
     await delay();
+    maybeFail(); // 5-10% error rate on write
     
     const { status } = await request.json() as { status: string };
     const updatedCandidate = await updateCandidateStatus(params.id as string, status as any);
@@ -115,6 +119,7 @@ export const candidatesHandlers = [
 
   http.patch('/applications/:id', async ({ params, request }) => {
     await delay();
+    maybeFail(); // 5-10% error rate on write
     
     const updates = await request.json() as any;
     const updatedCandidate = await updateCandidate(params.id as string, updates);
@@ -123,6 +128,7 @@ export const candidatesHandlers = [
 
   http.delete('/applications/:id', async ({ params }) => {
     await delay();
+    maybeFail(); // 5-10% error rate on write
     
     await deleteCandidate(params.id as string);
     return new HttpResponse(null, { status: 204 });

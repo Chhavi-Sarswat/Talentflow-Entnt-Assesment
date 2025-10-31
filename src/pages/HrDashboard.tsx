@@ -59,26 +59,25 @@ const HrDashboard = () => {
     iconColor: string;
     bgColor: string;
   }) => (
-    <div className="bg-white border border-emerald-300 rounded-lg shadow-sm p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center">
-          <div className={`p-3 ${bgColor} rounded-lg`}>
-            <div className={`md:w-6 md:h-6 w-4 h-4 ${iconColor}`}>{icon}</div>
-          </div>
-          <div className="ml-4">
-            <h3 className="text-nowrap font-medium text-gray-900">{title}</h3>
-            <p className="text-xs font-semibold text-emerald-600/70">
-              {" "}
-              {subtitle}
-            </p>
-          </div>
+    <div className="linkedin-card p-6 group hover:scale-[1.02] transition-all duration-300">
+      <div className="flex items-center justify-between mb-4">
+        <div className={`p-3 ${bgColor} rounded-xl shadow-sm`}>
+          <div className={`md:w-7 md:h-7 w-5 h-5 ${iconColor}`}>{icon}</div>
         </div>
         <div className="text-right">
-          <div className="md:text-lg lg:text-xl font-bold text-gray-900">
+          <div className="md:text-2xl lg:text-3xl font-bold text-gray-900 group-hover:text-[var(--linkedin-blue)] transition-colors">
             {value}
           </div>
-          {/* {trend && <div className="text-sm text-emerald-600">{trend}</div>} */}
         </div>
+      </div>
+      <div>
+        <h3 className="text-sm font-semibold text-gray-700 mb-1">{title}</h3>
+        <p className="text-xs font-medium text-gray-500">
+          {subtitle}
+        </p>
+      </div>
+      <div className="mt-3 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+        <div className="h-full bg-gradient-to-r from-[var(--linkedin-blue)] to-indigo-600 rounded-full" style={{width: '70%'}}></div>
       </div>
     </div>
   );

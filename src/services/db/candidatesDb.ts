@@ -32,27 +32,16 @@ if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
 
 export const initializeCandidates = async () => {
   try {
-    const candidatesCount = await candidatesDb.candidates.count();
-    if(candidatesCount > 0) {
-      return;
-    }
-
-    // console.log('Initializing candidates database...');
-    
-    // Clear existing database to ensure fresh start with new schema
+    // Force clear and reseed with Indian names
+    console.log('Clearing candidates database...');
     await candidatesDb.candidates.clear();
-    // console.log('Database cleared for fresh start');
     
-    // Seed candidates
-    // console.log('Seeding candidates...');
+    // Seed candidates with Indian names
+    console.log('Seeding candidates with Indian names...');
     await candidatesDb.candidates.bulkAdd(candidatesSeed);
-    // console.log(`Seeded ${candidatesSeed.length} candidates`);
-    
-    // Verify seeding
-    // const count = await candidatesDb.candidates.count();
-    // console.log('Final candidate count:', count);
+    console.log(`✅ Seeded ${candidatesSeed.length} candidates with Indian names`);
   } catch (error) {
-    // console.error('Error initializing candidates:', error);
+    console.error('Error initializing candidates:', error);
     throw error;
   }
 };

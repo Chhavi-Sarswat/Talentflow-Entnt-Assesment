@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "../ui/Button";
 import { COMPANY_INFO, PLATFORM_STATS } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 

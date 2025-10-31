@@ -1,6 +1,5 @@
 import React from "react";
 import type { Job } from "../../services/seed/jobsSeed";
-import Card from "../ui/Card";
 import { useNavigate } from "react-router-dom";
 
 interface JobCardProps {
@@ -9,20 +8,6 @@ interface JobCardProps {
 
 const JobCard: React.FC<JobCardProps> = ({ job }) => {
   const navigate = useNavigate();
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "Full-time":
-        return "bg-emerald-100 text-emerald-800";
-      case "Remote":
-        return "bg-blue-100 text-blue-800";
-      case "Part-time":
-        return "bg-yellow-100 text-yellow-800";
-      case "Contract":
-        return "bg-purple-100 text-purple-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
 
   const handleJobCardClick = () => {
     navigate(`/jobs/${job.id}`);

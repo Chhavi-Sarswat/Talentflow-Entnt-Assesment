@@ -1,6 +1,5 @@
 import React from "react";
 import { FEATURES } from "../../utils/constants";
-import Card from "../ui/Card";
 
 const Features: React.FC = () => {
   const getFeatureIcon = (iconName: string) => {

@@ -16,14 +16,14 @@ export const assessmentsDb = new AssessmentsDB();
 
 export const initializeAssessments = async () => {
   try {
-    const assessmentsCount = await assessmentsDb.assessments.count();
-    if(assessmentsCount > 0) {
-      return;
-    }
-
+    // Force clear and reseed
+    console.log('Clearing assessments database...');
     await assessmentsDb.assessments.clear();
+    
+    // Seed assessments
+    console.log('Seeding assessments...');
     await assessmentsDb.assessments.bulkAdd(assessmentsSeed);
-    // console.log(`Seeded ${assessmentsSeed.length} assessments`);
+    console.log(`✅ Seeded ${assessmentsSeed.length} assessments`);
   
   } catch (error) {
     console.error("Error initializing assessments:", error);

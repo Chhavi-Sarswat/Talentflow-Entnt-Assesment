@@ -28,29 +28,40 @@ if (import.meta.env.MODE === "development") {
         .start({
           onUnhandledRequest: "warn",
         })
-        .then(() => {
+        .then(async () => {
           // console.log("MSW started successfully");
-          // Initialize databases after MSW is ready
-          initializeJobs();
-          initializeCandidates();
-          initializeAssessments();
-          // Start the app after MSW is ready
+          // Initialize databases after MSW is ready and wait for them to complete
+          await Promise.all([
+            initializeJobs(),
+            initializeCandidates(),
+            initializeAssessments(),
+          ]);
+          // Start the app after databases are initialized
           startApp();
         })
         .catch((error) => console.error("MSW failed to start:", error));
     })
-    .catch((error) => {
+    .catch(async (error) => {
       console.error("Failed to import MSW:", error);
       // Fallback: start app without MSW if import fails
-      initializeJobs();
-      initializeCandidates();
-      initializeAssessments();
+      await Promise.all([
+        initializeJobs(),
+        initializeCandidates(),
+        initializeAssessments(),
+      ]);
       startApp();
     });
 } else {
-  // In production, initialize databases immediately and start app
-  initializeJobs();
-  initializeCandidates();
-  initializeAssessments();
-  startApp();
+  // In production, initialize databases and wait for them to complete before starting app
+  Promise.all([
+    initializeJobs(),
+    initializeCandidates(),
+    initializeAssessments(),
+  ]).then(() => {
+    startApp();
+  }).catch((error) => {
+    console.error("Error initializing databases:", error);
+    // Start app anyway
+    startApp();
+  });
 }

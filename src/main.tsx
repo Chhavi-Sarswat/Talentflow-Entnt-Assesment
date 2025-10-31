@@ -19,7 +19,7 @@ const startApp = () => {
   );
 };
 
-if (process.env.NODE_ENV === "development") {
+if (import.meta.env.MODE === "development") {
   // console.log("Starting MSW in development mode");
   import("./services/mocks/browser")
     .then(({ worker }) => {

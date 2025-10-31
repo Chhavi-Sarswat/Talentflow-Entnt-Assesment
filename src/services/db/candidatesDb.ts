@@ -15,7 +15,7 @@ class CandidatesDB extends Dexie {
 export const candidatesDb = new CandidatesDB();
 
 // Add debugging functions to window object in development
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+if (typeof window !== 'undefined' && import.meta.env.MODE === 'development') {
   (window as any).clearCandidatesDB = async () => {
     // console.log('Clearing candidates database...');
     await candidatesDb.candidates.clear();
